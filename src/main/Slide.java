@@ -2,6 +2,7 @@ package main;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 public class Slide implements Comparable {
@@ -47,11 +48,11 @@ public class Slide implements Comparable {
     }
 
     public int scoreWith(Slide other) {
-        List<String> intersection = new ArrayList<>(this.tags);
+        HashSet<String> intersection = new HashSet<>(this.tags);
         intersection.retainAll(other.tags);
-        List<String> left = new ArrayList<>(this.tags);
+        HashSet<String> left = new HashSet<>(this.tags);
         left.removeAll(intersection);
-        List<String> right = new ArrayList<>(other.tags);
+        HashSet<String> right = new HashSet<>(other.tags);
         right.removeAll(intersection);
         int minSizes = Math.min(left.size(), right.size());
         return Math.min(minSizes, intersection.size());
@@ -65,6 +66,10 @@ public class Slide implements Comparable {
             if (score > bestScore) {
                 bestScore = score;
                 bestMatch = slide;
+                // Stop if there is no more potential.
+                if (bestScore == this.tags.size() / 2) {
+                    break;
+                }
             }
         }
         return bestMatch;
