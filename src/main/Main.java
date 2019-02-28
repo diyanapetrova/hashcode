@@ -3,10 +3,7 @@ package main;
 import util.PrintFormatting;
 import util.WrappedReader;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class Main {
 
@@ -29,6 +26,8 @@ public class Main {
             ArrayList<Photo> photos = getSample(lines);
             photos = clearSingleTag(photos);
             LinkedList<Slide> slides = toSlides(photos);
+            Collections.sort(slides);
+            Collections.reverse(slides);
             PrintFormatting.print(slides);
             // TODO: 28/02/2019 All the code
         }
