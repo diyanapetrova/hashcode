@@ -44,4 +44,15 @@ public class Slide implements Comparable {
         });
         return sb.toString().trim();
     }
+
+    public int scoreWith(Slide other) {
+        List<String> intersection = new ArrayList<>(this.tags);
+        intersection.retainAll(other.tags);
+        List<String> left = new ArrayList<>(this.tags);
+        left.removeAll(intersection);
+        List<String> right = new ArrayList<>(other.tags);
+        right.removeAll(intersection);
+        int minSizes = Math.min(left.size(), right.size());
+        return Math.min(minSizes, intersection.size());
+    }
 }

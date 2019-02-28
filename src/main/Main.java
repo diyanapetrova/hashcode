@@ -1,5 +1,7 @@
 package main;
 
+import util.PrintFormatting;
+import util.ProgressBar;
 import util.WrappedReader;
 import util.WrappedWriter;
 
@@ -11,11 +13,11 @@ public class Main {
     public static int N;
 
     static {
-        FILES.add("files/a_example.txt");
+//        FILES.add("files/a_example.txt");
         FILES.add("files/b_lovely_landscapes.txt");
-        FILES.add("files/c_memorable_moments.txt");
-        FILES.add("files/d_pet_pictures.txt");
-        FILES.add("files/e_shiny_selfies.txt");
+//        FILES.add("files/c_memorable_moments.txt");
+//        FILES.add("files/d_pet_pictures.txt");
+//        FILES.add("files/e_shiny_selfies.txt");
     }
 
     public static void main(String[] args) {
@@ -29,7 +31,10 @@ public class Main {
             LinkedList<Slide> slides = toSlides(photos);
             Collections.sort(slides);
             Collections.reverse(slides);
-            WrappedWriter.saveToFile(asOutput(slides), "output" + i + ".txt");
+            LinkedList<Slide> slideshow = createSlideshow(slides);
+            // TODO: 28/02/2019 CODE
+            WrappedWriter.saveToFile(asOutput(slideshow), "output" + i + ".txt");
+            PrintFormatting.print("done with " + i);
             i++;
         }
     }
@@ -103,6 +108,38 @@ public class Main {
             sb.append("\n");
         }
         return sb.toString();
+    }
+
+    private static Slide getBestMatch(Slide prime, LinkedList<Slide> slides) {
+        int bestScore = -1;
+        Slide bestMatch = null;
+        for (Slide slide : slides) {
+            int score = prime.scoreWith(slide);
+            if (score > bestScore) {
+                bestScore = score;
+                bestMatch = slide;
+            }
+        }
+        return bestMatch;
+    }
+
+    private static LinkedList<Slide> createSlideshow(LinkedList<Slide> slides) {
+        LinkedList<Slide> slideshow = new LinkedList<>();
+        int totalWork = slides.size();
+        // TODO: 28/02/2019 change poll method
+        Slide prime = slides.pollFirst();
+        slideshow.addLast(prime);
+        while (!slides.isEmpty()) {
+            Slide bestMatch = getBestMatch(prime, slides);
+            slides.remove(bestMatch);
+            slideshow.addLast(bestMatch);
+            prime = bestMatch;
+            String progressBar = ProgressBar.formatBar(slideshow.size(), totalWork);
+            PrintFormatting.print(progressBar);
+//            PrintFormatting.print(slides.size());
+        }
+
+        return slideshow;
     }
 }
 
