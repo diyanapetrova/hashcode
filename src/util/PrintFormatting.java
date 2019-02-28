@@ -1,8 +1,5 @@
 package util;
 
-import sun.security.action.GetPropertyAction;
-
-import java.security.AccessController;
 import java.util.Collection;
 
 /**
@@ -13,8 +10,7 @@ import java.util.Collection;
 public final class PrintFormatting {
 
     /** A reference to the system-specific line separator. */
-    public static final String NEW_LINE = AccessController.doPrivileged(
-            new GetPropertyAction("line.separator"));
+    public static final String NEW_LINE = "\n";
 
     /** A constant String reference ot a comma. */
     public static final String SEPARATOR = ",";
