@@ -11,6 +11,7 @@ public class Main {
 
     public static final ArrayList<String> FILES = new ArrayList<>();
     public static int N;
+    public static final LinkedHashMap<Integer, LinkedHashSet<Slide>> groups = new LinkedHashMap<>();
 
     static {
 //        FILES.add("files/a_example.txt");
@@ -31,7 +32,8 @@ public class Main {
             LinkedList<Slide> slides = toSlides(photos);
             Collections.sort(slides);
             Collections.reverse(slides);
-            LinkedList<Slide> slideshow = createSlideshow(slides);
+            fillGroups(slides);
+            LinkedList<Slide> slideshow = createSlideShow();
             // TODO: 28/02/2019 CODE
             WrappedWriter.saveToFile(asOutput(slideshow), "output" + i + ".txt");
             PrintFormatting.print("done with " + i);
@@ -110,36 +112,61 @@ public class Main {
         return sb.toString();
     }
 
-    private static Slide getBestMatch(Slide prime, LinkedList<Slide> slides) {
-        int bestScore = -1;
-        Slide bestMatch = null;
+//    private static LinkedList<Slide> createSlideshow(LinkedList<Slide> slides) {
+//        LinkedList<Slide> slideshow = new LinkedList<>();
+//        int totalWork = slides.size();
+//        // TODO: 28/02/2019 change poll method
+//        Slide lastAdded = slides.pollFirst();
+//        LinkedHashSet<Slide> slideSet = new LinkedHashSet<>(slides);
+//        slideshow.addLast(lastAdded);
+//        while (!slideSet.isEmpty()) {
+//            assert lastAdded != null;
+//            Slide bestMatch = lastAdded.getBestMatch(slideSet);
+//            slideSet.remove(bestMatch);
+//            slideshow.addLast(bestMatch);
+//            lastAdded = bestMatch;
+//            String progressBar = ProgressBar.formatBar(slideshow.size(), totalWork);
+//            System.out.print(progressBar);
+//        }
+//
+//        return slideshow;
+//    }
+
+    private static void fillGroups(Collection<Slide> slides) {
         for (Slide slide : slides) {
-            int score = prime.scoreWith(slide);
-            if (score > bestScore) {
-                bestScore = score;
-                bestMatch = slide;
+            int numberOfTags = slide.tags.size();
+            if (!groups.containsKey(numberOfTags)) {
+                groups.put(numberOfTags, new LinkedHashSet<>());
             }
+            groups.get(numberOfTags).add(slide);
         }
-        return bestMatch;
     }
 
-    private static LinkedList<Slide> createSlideshow(LinkedList<Slide> slides) {
-        LinkedList<Slide> slideshow = new LinkedList<>();
-        int totalWork = slides.size();
-        // TODO: 28/02/2019 change poll method
-        Slide prime = slides.pollFirst();
-        slideshow.addLast(prime);
-        while (!slides.isEmpty()) {
-            Slide bestMatch = getBestMatch(prime, slides);
-            slides.remove(bestMatch);
-            slideshow.addLast(bestMatch);
+    private static LinkedList<Slide> createSlideShowPart(LinkedHashSet<Slide> group) {
+        int totalWork = group.size();
+        Slide prime = group.iterator().next();
+        group.remove(prime);
+        LinkedList<Slide> slideShow = new LinkedList<>();
+        slideShow.addLast(prime);
+        while (!group.isEmpty()) {
+            Slide bestMatch = prime.getBestMatch(group);
+            group.remove(bestMatch);
+            slideShow.addLast(bestMatch);
             prime = bestMatch;
-            String progressBar = ProgressBar.formatBar(slideshow.size(), totalWork);
-            PrintFormatting.print(progressBar);
-//            PrintFormatting.print(slides.size());
+            String progressBar = ProgressBar.formatBar(slideShow.size(), totalWork);
+            System.out.print(progressBar);
         }
+        return slideShow;
+    }
 
-        return slideshow;
+    private static LinkedList<Slide> createSlideShow() {
+        LinkedList<Slide> slideShow = new LinkedList<>();
+        for (Integer noTags : groups.keySet()) {
+            LinkedHashSet<Slide> group = groups.get(noTags);
+            LinkedList<Slide> part = createSlideShowPart(group);
+            slideShow.addAll(part);
+        }
+        return slideShow;
     }
 }
 

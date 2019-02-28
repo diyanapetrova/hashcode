@@ -1,6 +1,7 @@
 package main;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class Slide implements Comparable {
@@ -54,5 +55,18 @@ public class Slide implements Comparable {
         right.removeAll(intersection);
         int minSizes = Math.min(left.size(), right.size());
         return Math.min(minSizes, intersection.size());
+    }
+
+    public Slide getBestMatch(Collection<Slide> slides) {
+        int bestScore = -1;
+        Slide bestMatch = null;
+        for (Slide slide : slides) {
+            int score = this.scoreWith(slide);
+            if (score > bestScore) {
+                bestScore = score;
+                bestMatch = slide;
+            }
+        }
+        return bestMatch;
     }
 }
