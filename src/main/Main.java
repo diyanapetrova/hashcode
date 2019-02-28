@@ -1,7 +1,7 @@
 package main;
 
-import util.PrintFormatting;
 import util.WrappedReader;
+import util.WrappedWriter;
 
 import java.util.*;
 
@@ -12,14 +12,15 @@ public class Main {
 
     static {
         FILES.add("files/a_example.txt");
-//        FILES.add("files/b_lovely_landscapes.txt");
-//        FILES.add("files/c_memorable_moments.txt");
-//        FILES.add("files/d_pet_pictures.txt");
-//        FILES.add("files/e_shiny_selfies.txt");
+        FILES.add("files/b_lovely_landscapes.txt");
+        FILES.add("files/c_memorable_moments.txt");
+        FILES.add("files/d_pet_pictures.txt");
+        FILES.add("files/e_shiny_selfies.txt");
     }
 
     public static void main(String[] args) {
         ArrayList<String> lines;
+        int i = 0;
         for (String name : FILES) {
             lines = WrappedReader.readFileLines(name);
             N = Integer.parseInt(lines.get(0));
@@ -28,8 +29,8 @@ public class Main {
             LinkedList<Slide> slides = toSlides(photos);
             Collections.sort(slides);
             Collections.reverse(slides);
-            PrintFormatting.print(slides);
-            // TODO: 28/02/2019 All the code
+            WrappedWriter.saveToFile(asOutput(slides), "output" + i + ".txt");
+            i++;
         }
     }
 
@@ -91,6 +92,17 @@ public class Main {
             slides.add(s);
         }
         return slides;
+    }
+
+    private static String asOutput(LinkedList<Slide> slides) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(slides.size());
+        sb.append("\n");
+        for (Slide slide : slides) {
+            sb.append(slide.asOutput());
+            sb.append("\n");
+        }
+        return sb.toString();
     }
 }
 
