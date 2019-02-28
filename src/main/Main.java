@@ -8,23 +8,21 @@ import java.util.Arrays;
 
 public class Main {
 
-
     public static final ArrayList<String> FILES = new ArrayList<>();
     public static int N;
 
-    public static void main(String[] args) {
-
-
+    static {
         FILES.add("files/a_example.txt");
 //        FILES.add("files/b_lovely_landscapes.txt");
 //        FILES.add("files/c_memorable_moments.txt");
 //        FILES.add("files/d_pet_pictures.txt");
 //        FILES.add("files/e_shiny_selfies.txt");
+    }
 
+    public static void main(String[] args) {
         ArrayList<String> lines;
         for (String name : FILES) {
             lines = WrappedReader.readFileLines(name);
-
             N = Integer.parseInt(lines.get(0));
             ArrayList<Photo> photos = getSample(lines);
             photos = clearSingleTag(photos);
