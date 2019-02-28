@@ -5,6 +5,8 @@ import util.WrappedReader;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Main {
 
@@ -26,7 +28,8 @@ public class Main {
             N = Integer.parseInt(lines.get(0));
             ArrayList<Photo> photos = getSample(lines);
             photos = clearSingleTag(photos);
-            PrintFormatting.print(photos);
+            LinkedList<Slide> slides = toSlides(photos);
+            PrintFormatting.print(slides);
             // TODO: 28/02/2019 All the code
         }
     }
@@ -58,6 +61,37 @@ public class Main {
             }
         }
         return filtered;
+    }
+
+    private static LinkedList<Slide> toSlides(ArrayList<Photo> photos) {
+        LinkedList<Photo> horizontal = new LinkedList<>();
+        LinkedList<Photo> vertical = new LinkedList<>();
+        for (Photo photo : photos) {
+            if (photo.isHorizontal()) {
+                horizontal.add(photo);
+            } else {
+                vertical.add(photo);
+            }
+        }
+        LinkedList<Slide> slides = new LinkedList<>();
+        slides.addAll(horizontalToSlide(horizontal));
+        slides.addAll(verticalToSlide(vertical));
+        return slides;
+    }
+
+    private static LinkedList<Slide> horizontalToSlide(List<Photo> horizontal) {
+        LinkedList<Slide> slides = new LinkedList<>();
+        horizontal.forEach(photo -> slides.add(new Slide(photo)));
+        return slides;
+    }
+
+    private static LinkedList<Slide> verticalToSlide(List<Photo> vertical) {
+        LinkedList<Slide> slides = new LinkedList<>();
+        for (int i = 0; i < vertical.size() - 1; i += 2) {
+            Slide s = new Slide(vertical.get(i), vertical.get(i + 1));
+            slides.add(s);
+        }
+        return slides;
     }
 }
 

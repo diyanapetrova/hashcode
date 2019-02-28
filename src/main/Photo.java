@@ -22,7 +22,8 @@ public class Photo {
     @Override
     public String toString() {
         return "Photo{" +
-                "horizontal=" + horizontal +
+                "id=" + id +
+                ", horizontal=" + horizontal +
                 ", numTags=" + numTags +
                 ", tags=" + tags +
                 '}';

@@ -1,15 +1,23 @@
 package main;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Slide implements Comparable {
 
-    List<Photo> photos;
-    List<String> tags;
+    List<Photo> photos = new ArrayList<>();
+    List<String> tags = new ArrayList<>();
 
-    public Slide(List<Photo> photos, List<String> tags) {
-        this.photos = photos;
-        this.tags = tags;
+    public Slide(Photo photo) {
+        photos.add(photo);
+        tags.addAll(photo.tags);
+    }
+
+    public Slide(Photo p1, Photo p2) {
+        photos.add(p1);
+        photos.add(p2);
+        tags.addAll(p1.tags);
+        tags.addAll(p2.tags);
     }
 
 
@@ -22,7 +30,10 @@ public class Slide implements Comparable {
 
     @Override
     public String toString() {
-        return photos.toString();
+        return "Slide{" +
+                "photos=" + photos +
+                ", tags=" + tags +
+                '}';
     }
 
     public String asOutput() {
