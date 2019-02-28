@@ -1,6 +1,8 @@
 package main;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 
 public class Photo {
     int id;
@@ -27,5 +29,27 @@ public class Photo {
                 ", numTags=" + numTags +
                 ", tags=" + tags +
                 '}';
+    }
+
+    private int intersectionSize(Photo other) {
+        HashSet<String> intersection = new HashSet<>(this.tags);
+        intersection.retainAll(other.tags);
+        return intersection.size();
+    }
+
+    public Photo getBestPair(Collection<Photo> photos) {
+        Photo bestPair = null;
+        int minIntersection = Integer.MAX_VALUE;
+        for (Photo photo : photos) {
+            int score = intersectionSize(photo);
+            if (score < minIntersection) {
+                minIntersection = score;
+                bestPair = photo;
+                if (minIntersection == 0) {
+                    break;
+                }
+            }
+        }
+        return bestPair;
     }
 }

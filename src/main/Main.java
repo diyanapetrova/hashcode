@@ -1,5 +1,6 @@
 package main;
 
+import util.PrintFormatting;
 import util.ProgressBar;
 import util.WrappedReader;
 import util.WrappedWriter;
@@ -15,7 +16,7 @@ public class Main {
     static {
         FILES.add("files/a_example.txt");
 //        FILES.add("files/b_lovely_landscapes.txt");
-        FILES.add("files/c_memorable_moments.txt");
+//        FILES.add("files/c_memorable_moments.txt");
 //        FILES.add("files/d_pet_pictures.txt");
 //        FILES.add("files/e_shiny_selfies.txt");
     }
@@ -33,7 +34,9 @@ public class Main {
             fillGroups(slides);
             LinkedList<Slide> slideshow = createSlideShow();
             // TODO: 28/02/2019 CODE
-            WrappedWriter.saveToFile(asOutput(slideshow), "output_" + name + ".txt");
+            String filename = "output_" + name + ".txt";
+            WrappedWriter.saveToFile(asOutput(slideshow), filename);
+            PrintFormatting.print("done with: " + filename);
         }
     }
 
@@ -88,12 +91,21 @@ public class Main {
         return slides;
     }
 
-    private static LinkedList<Slide> verticalToSlide(List<Photo> vertical) {
+    private static LinkedList<Slide> verticalToSlide(LinkedList<Photo> vertical) {
         LinkedList<Slide> slides = new LinkedList<>();
-        for (int i = 0; i < vertical.size() - 1; i += 2) {
-            Slide s = new Slide(vertical.get(i), vertical.get(i + 1));
+        int totalWork = vertical.size();
+        Photo prime;
+        prime = vertical.pollFirst();
+        while (!vertical.isEmpty()) {
+            Slide s = new Slide(prime);
             slides.add(s);
+            Photo added = s.addBest(vertical);
+            vertical.remove(added);
+            prime = added;
+            String bar = ProgressBar.formatBar(vertical.size(), totalWork);
+            System.out.print("creating verticals: " + bar);
         }
+        System.out.println();
         return slides;
     }
 
@@ -131,7 +143,7 @@ public class Main {
             slideShow.addLast(bestMatch);
             prime = bestMatch;
             String progressBar = ProgressBar.formatBar(slideShow.size(), totalWork);
-            System.out.print(progressBar);
+            System.out.print("" + progressBar);
         }
         System.out.println();
         return slideShow;

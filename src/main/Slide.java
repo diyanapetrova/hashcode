@@ -22,7 +22,13 @@ public class Slide implements Comparable {
         tags.addAll(p2.tags);
     }
 
-
+    public Photo addBest(Collection<Photo> others) {
+        Photo p1 = photos.get(0);
+        Photo p2 = p1.getBestPair(others);
+        photos.add(p2);
+        tags.addAll(p2.tags);
+        return p2;
+    }
     @Override
     public int compareTo( Object o) {
 
