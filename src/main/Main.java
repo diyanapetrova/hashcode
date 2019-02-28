@@ -1,6 +1,5 @@
 package main;
 
-import util.PrintFormatting;
 import util.ProgressBar;
 import util.WrappedReader;
 import util.WrappedWriter;
@@ -11,19 +10,18 @@ public class Main {
 
     public static final ArrayList<String> FILES = new ArrayList<>();
     public static int N;
-    public static final LinkedHashMap<Integer, LinkedHashSet<Slide>> groups = new LinkedHashMap<>();
+    public static LinkedHashMap<Integer, LinkedHashSet<Slide>> groups;
 
     static {
-//        FILES.add("files/a_example.txt");
-        FILES.add("files/b_lovely_landscapes.txt");
-//        FILES.add("files/c_memorable_moments.txt");
+        FILES.add("files/a_example.txt");
+//        FILES.add("files/b_lovely_landscapes.txt");
+        FILES.add("files/c_memorable_moments.txt");
 //        FILES.add("files/d_pet_pictures.txt");
 //        FILES.add("files/e_shiny_selfies.txt");
     }
 
     public static void main(String[] args) {
         ArrayList<String> lines;
-        int i = 0;
         for (String name : FILES) {
             lines = WrappedReader.readFileLines(name);
             N = Integer.parseInt(lines.get(0));
@@ -35,9 +33,7 @@ public class Main {
             fillGroups(slides);
             LinkedList<Slide> slideshow = createSlideShow();
             // TODO: 28/02/2019 CODE
-            WrappedWriter.saveToFile(asOutput(slideshow), "output" + i + ".txt");
-            PrintFormatting.print("done with " + i);
-            i++;
+            WrappedWriter.saveToFile(asOutput(slideshow), "output_" + name + ".txt");
         }
     }
 
@@ -112,27 +108,8 @@ public class Main {
         return sb.toString();
     }
 
-//    private static LinkedList<Slide> createSlideshow(LinkedList<Slide> slides) {
-//        LinkedList<Slide> slideshow = new LinkedList<>();
-//        int totalWork = slides.size();
-//        // TODO: 28/02/2019 change poll method
-//        Slide lastAdded = slides.pollFirst();
-//        LinkedHashSet<Slide> slideSet = new LinkedHashSet<>(slides);
-//        slideshow.addLast(lastAdded);
-//        while (!slideSet.isEmpty()) {
-//            assert lastAdded != null;
-//            Slide bestMatch = lastAdded.getBestMatch(slideSet);
-//            slideSet.remove(bestMatch);
-//            slideshow.addLast(bestMatch);
-//            lastAdded = bestMatch;
-//            String progressBar = ProgressBar.formatBar(slideshow.size(), totalWork);
-//            System.out.print(progressBar);
-//        }
-//
-//        return slideshow;
-//    }
-
     private static void fillGroups(Collection<Slide> slides) {
+        groups = new LinkedHashMap<>();
         for (Slide slide : slides) {
             int numberOfTags = slide.tags.size();
             if (!groups.containsKey(numberOfTags)) {
@@ -156,6 +133,7 @@ public class Main {
             String progressBar = ProgressBar.formatBar(slideShow.size(), totalWork);
             System.out.print(progressBar);
         }
+        System.out.println();
         return slideShow;
     }
 
