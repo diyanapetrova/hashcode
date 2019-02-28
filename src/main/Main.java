@@ -96,14 +96,14 @@ public class Main {
         int totalWork = vertical.size();
         Photo prime;
         prime = vertical.pollFirst();
-        while (!vertical.isEmpty()) {
+        while (prime != null) {
             Slide s = new Slide(prime);
             slides.add(s);
             Photo added = s.addBest(vertical);
             vertical.remove(added);
-            prime = added;
-            String bar = ProgressBar.formatBar(vertical.size(), totalWork);
-            System.out.print("creating verticals: " + bar);
+            prime = vertical.pollFirst();
+            String bar = ProgressBar.formatBar(slides.size(), totalWork);
+            System.out.print(bar);
         }
         System.out.println();
         return slides;
@@ -143,7 +143,7 @@ public class Main {
             slideShow.addLast(bestMatch);
             prime = bestMatch;
             String progressBar = ProgressBar.formatBar(slideShow.size(), totalWork);
-            System.out.print("" + progressBar);
+            System.out.print("slide show part: " + progressBar);
         }
         System.out.println();
         return slideShow;
